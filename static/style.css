@@ -1,0 +1,153 @@
+.box1 {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+.box2 {
+    
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+.box3 {
+    padding: 0.5em 1em;
+    margin: 2em 0 9em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+.box4 {
+    padding: 0.5em 1em;
+    margin: 1.5em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+
+.contents-main {
+    padding-top: 10px;
+}
+
+.contents-headline {
+    border-bottom: solid 2px #6091d3;
+    font-size: 18px;
+}
+
+.check-pointt {
+    float: left;
+}
+
+.progresss{
+    position: fixed;
+}
+
+.fixed-headline {
+    padding-bottom: 0.5em;
+    font-size: 18px;
+    
+}
+
+.fixed-text {
+    font-size: 1em;
+}
+
+.fixed-contents {
+    position: fixed;
+    bottom: 0;
+    left: 1em;
+    right: 1em;
+
+    padding: 0.5em 1em;
+    margin: 1.5em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+
+input[type="text"]{
+    width: 10em;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 2px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+    
+}
+
+input[type="number"]{
+    width: 3em;
+    text-align: center;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 2px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+    
+}
+
+input[type="checkbo"]{
+    width: 4em;
+    text-align: center;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 2px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+
+#poke_name_txt {
+    width: 8em;
+}
+
+#poke_move {
+    width: 9em;
+}
+
+#button1 {
+    float: right;
+    width: 8em;
+    text-align: center;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 2px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/      
+}
+
+#button2 {
+    width: 3em;
+    text-align: center;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 1px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/      
+}
+
+
+select{
+    
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 2px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}

@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+<link href="{% static 'style.css' %}" rel="stylesheet">
+{% endblock customcss %}
+
+{% block header %}
+<div class="main">
+      <div class="container">
+        <form method="POST" enctype="application/x-www-form-urlencoded">{% csrf_token%}
+          <div class="row">
+            <div class="box1 col-lg-6">
+              <div class="contents-headline">
+                <i class="fa-solid fa-bolt"></i>
+                ：攻撃側
+              </div>
+              <div class="contents-main">
+                <div class="alert alert-light" role="alert">
+                    <img src="{{ poke_atk.poke_image.url }}" class="img-fluid" alt="Responsive image">
+                    H:{{ poke_atk.poke_hp}} &nbsp;
+                    A:{{ poke_atk.poke_attack }}&nbsp;
+                    B:{{ poke_atk.poke_defense }}&nbsp;
+                    C:{{ poke_atk.poke_sp_atk}}&nbsp;
+                    D: {{ poke_atk.poke_sp_def}}&nbsp;
+                    S:{{ poke_atk.poke_speed }}&nbsp;
+                </div>
+                <div class="row">
+                  <div class="col-sm-6 mb-3">
+                      ポケモン名：<input type="text" name="name1" value="{{ poke_atk }}" id="poke_name_txt">
+                      <input type="submit" value="登録" id="button2">
+                  </div>
+                  <div class="col-sm-6 mb-3">
+                    テラスタル：
+                    <select name="atk_tera_type">
+                      <option value="{{ atk_tera_type}}"><img src="" alt="">{{ atk_tera_type}}</option>
+                      <option value="なし"><img src="" alt="">なし</option>
+                      <option value="ノーマル"><img src="" alt="">ノーマル</option>
+                      <option value="ほのお"><img src="" alt="">ほのお</option>
+                      <option value="みず"><img src="" alt="">みず</option>
+                      <option value="でんき"><img src="" alt="">でんき</option>
+                      <option value="くさ"><img src="" alt="">くさ</option>
+                      <option value="こおり"><img src="" alt="">こおり</option>
+                      <option value="かくとう"><img src="" alt="">かくとう</option>
+                      <option value="どく"><img src="" alt="">どく</option>
+                      <option value="じめん"><img src="" alt="">じめん</option>
+                      <option value="ひこう"><img src="" alt="">ひこう</option>
+                      <option value="エスパー"><img src="" alt="">エスパー</option>
+                      <option value="むし"><img src="" alt="">むし</option>
+                      <option value="いわ"><img src="" alt="">いわ</option>
+                      <option value="ゴースト"><img src="" alt="">ゴースト</option>
+                      <option value="ドラゴン"><img src="" alt="">ドラゴン</option>
+                      <option value="あく"><img src="" alt="">あく</option>
+                      <option value="はがね"><img src="" alt="">はがね</option>
+                      <option value="フェアリー"><img src="" alt="">フェアリー</option>
+                    </select>
+                  </div>
+
+                </div>
+                <p mb-3>
+                  攻撃技：
+                  <input type="text" name="poke_move" value="{{ poke_move}}">
+                </p>
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    レベル：
+                    <input type="number" min="1" max="50" value="{{ atk_level }}" name="atk_level">
+                  </div>
+                  <div class="col-6 mb-3">
+                    攻撃ランク：
+                    <input type="number" max="6" min="-6" name="atk_rank" value="{{ atk_rank }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="attack-int col-6 mb-3">
+                    <label for="atk_ev">攻撃側の努力値：</label>
+                    <select name="atk_ev" id="atk_ev">
+                      <option value="{{ atk_ev }}">{{ atk_ev }}</option>
+                      <option value="0">0</option>
+                      <option value="4">4</option>
+                      <option value="12">12</option>
+                      <option value="20">20</option>
+                      <option value="28">28</option>
+                      <option value="36">36</option>
+                      <option value="44">44</option>
+                      <option value="52">52</option>
+                      <option value="60">60</option>
+                      <option value="68">68</option>
+                      <option value="76">76</option>
+                      <option value="84">84</option>
+                      <option value="92">92</option>
+                      <option value="100">100</option>
+                      <option value="108">108</option>
+                      <option value="116">116</option>
+                      <option value="124">124</option>
+                      <option value="132">132</option>
+                      <option value="140">140</option>
+                      <option value="148">148</option>
+                      <option value="156">156</option>
+                      <option value="164">164</option>
+                      <option value="172">172</option>
+                      <option value="180">180</option>
+                      <option value="188">188</option>
+                      <option value="196">196</option>
+                      <option value="204">204</option>
+                      <option value="212">212</option>
+                      <option value="220">220</option>
+                      <option value="236">236</option>
+                      <option value="244">244</option>
+                      <option value="252">252</option>
+                    </select>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <div class="atk_iv">
+                      攻撃側の個体値：
+                      <input type="number" name="atk_iv" max="31" min="0" value="{{ atk_iv }}">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="poke-abilyty col-md-6 mb-3">
+                    特性：
+                    <select name="atk_abi">
+                      <option value="{{ atk_abi }}">{{ atk_abi }}</option>
+                      <option value="特性を指定する">特性を指定する</option>
+                      <option value="{{poke_atk.poke_ability}}">{{poke_atk.poke_ability}}</option>
+                      <option value="{{ poke_atk.poke_ability2}}">{{ poke_atk.poke_ability2}}</option>
+                      <option value="{{poke_atk.poke_abi_hidden}}">{{poke_atk.poke_abi_hidden}}</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    もちもの：
+                    <select name="atk_item" id="atk-item">
+                        <option value="{{ atk_item }}">{{ atk_item }}</option>
+                        <option value="もちものを指定する">もちものを指定する</option>
+                        <option value="いのちのたま">いのちのたま</option>
+                        <option value="こだわりハチマキ">こだわりハチマキ</option>
+                        <option value="こだわりメガネ">こだわりメガネ</option>
+                        <option value="たつじんのおび">たつじんのおび</option>
+                        <option value="ちからのハチマキ">ちからのハチマキ</option>
+                        <option value="ものしりメガネ">ものしりメガネ</option>
+                        <option value="タイプ強化系">タイプ強化系</option>
+                        <option value="ジェル系">ジェル系</option>
+                        <option value="ふといほね">ふといほね</option>
+                        <option value="でんきだま">でんきだま</option>
+                        <option value="しんかいのきば">しんかいのきば</option>
+                        <option value="はっきんだま">はっきんだま</option>
+                        <option value="こころのしずく">こころのしずく</option>
+                        <option value="ばんのうがさ">ばんのうがさ</option>
+                    </select>
+
+                  </div>
+                  <p class="mt-3">
+                    <!--type="radio"にすると実際に送られる値はvalueで指定したものになる-->
+                    <!--radioはname属性を揃えてあげることで、同じ質問だと認識して一つしか選択できないようにする-->
+                    性格補正：
+                    <label><input type="radio" name="atk_nature" value="1.1">1.1倍&nbsp;</label>
+                    <label><input type="radio" name="atk_nature" value="1.0" checked>1.0倍&nbsp;</label>
+                    <label><input type="radio" name="atk_nature" value="0.9">0.9倍&nbsp;</label>
+                  </p>
+                </div>
+                <!-- <div class="check-point">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="flexSwitchCheckDefault" name="atk_situ"
+                      value="atk_burn">やけど</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="flexSwitchCheckDisabled" name="atk_situ"
+                      value="atk_critical_hit">急所
+                  </div>
+                </div> -->
+
+                <input type="checkbox" name="atk_situ" value="atk_burn">やけど&nbsp;
+                <!-- <input type="checkbox" name="atk_situ" value="atk_critical_hit">急所&nbsp; -->
+
+              </div>
+            </div>
+            <div class="box2 col-lg-6">
+              <div class="contents-headline">
+                <i class="fa-solid fa-shield-halved"></i>
+                ：防御側
+              </div>
+              <div class="contents-main">
+                <div class="alert alert-light" role="alert">
+                    <img src="{{ poke_def.poke_image.url }}" class="img-fluid" alt="Responsive image">
+                    H:{{ poke_def.poke_hp}} &nbsp;
+                    A:{{ poke_def.poke_attack }}&nbsp;
+                    B:{{ poke_def.poke_defense }}&nbsp;
+                    C:{{ poke_def.poke_sp_atk}}&nbsp;
+                    D: {{ poke_def.poke_sp_def}}&nbsp;
+                    S:{{ poke_def.poke_speed }}&nbsp;
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6 mb-3">
+                    ポケモン名：<input type="text" name="name2" value="{{ poke_def }}" id="poke_name_txt">
+                    <input type="submit" value="登録" id="button2">
+                  </div>
+                  <div class="col-sm-6 mb-2">
+                    テラスタル：
+                    <select name="def_tera_type">
+                      <option value="{{ def_tera_type }}"><img src="" alt="">{{ def_tera_type }}</option>
+                      <option value="なし"><img src="" alt="">なし</option>
+                      <option value="ノーマル"><img src="" alt="">ノーマル</option>
+                      <option value="ほのお"><img src="" alt="">ほのお</option>
+                      <option value="みず"><img src="" alt="">みず</option>
+                      <option value="でんき"><img src="" alt="">でんき</option>
+                      <option value="くさ"><img src="" alt="">くさ</option>
+                      <option value="こおり"><img src="" alt="">こおり</option>
+                      <option value="かくとう"><img src="" alt="">かくとう</option>
+                      <option value="どく"><img src="" alt="">どく</option>
+                      <option value="じめん"><img src="" alt="">じめん</option>
+                      <option value="ひこう"><img src="" alt="">ひこう</option>
+                      <option value="エスパー"><img src="" alt="">エスパー</option>
+                      <option value="むじ"><img src="" alt="">むし</option>
+                      <option value="いわ"><img src="" alt="">いわ</option>
+                      <option value="ゴースト"><img src="" alt="">ゴースト</option>
+                      <option value="ドラゴン"><img src="" alt="">ドラゴン</option>
+                      <option value="あく"><img src="" alt="">あく</option>
+                      <option value="はがね"><img src="" alt="">はがね</option>
+                      <option value="フェアリー"><img src="" alt="">フェアリー</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    レベル：
+                    <input type="number" min="1" max="50" name="def_level" value="{{ def_level }}">
+                  </div>
+                  <div class="col-6 mb-3">
+                    防御ランク：
+                    <input type="number" name="def_rank" max="6" min="-6" value="{{ def_rank }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="attack-int col-6 mb-3">
+                    <label for="def_ev">防御側の努力値：</label>
+                    <select name="def_ev" id="def_ev">
+                      <option value="{{ def_ev }}">{{ def_ev }}</option>
+                      <option value="0">0</option>
+                      <option value="4">4</option>
+                      <option value="12">12</option>
+                      <option value="20">20</option>
+                      <option value="28">28</option>
+                      <option value="36">36</option>
+                      <option value="44">44</option>
+                      <option value="52">52</option>
+                      <option value="60">60</option>
+                      <option value="68">68</option>
+                      <option value="76">76</option>
+                      <option value="84">84</option>
+                      <option value="92">92</option>
+                      <option value="100">100</option>
+                      <option value="108">108</option>
+                      <option value="116">116</option>
+                      <option value="124">124</option>
+                      <option value="132">132</option>
+                      <option value="140">140</option>
+                      <option value="148">148</option>
+                      <option value="156">156</option>
+                      <option value="164">164</option>
+                      <option value="172">172</option>
+                      <option value="180">180</option>
+                      <option value="188">188</option>
+                      <option value="196">196</option>
+                      <option value="204">204</option>
+                      <option value="212">212</option>
+                      <option value="220">220</option>
+                      <option value="236">236</option>
+                      <option value="244">244</option>
+                      <option value="252">252</option>
+                    </select>
+                  </div>
+                  <di class="col-6 mb-3">
+                    防御側の個体値:
+                    <input type="number" name="def_iv" max="31" min="0" value="{{ def_iv }}">
+                  </di>
+                </div>
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    <label for="def_hp">HPの努力値:</label>
+                    <select name="def_hp" id="def_hp">
+                      <option value="{{ def_hp }}">{{ def_hp }}</option>
+                      <option value="0">0</option>
+                      <option value="4">4</option>
+                      <option value="12">12</option>
+                      <option value="20">20</option>
+                      <option value="28">28</option>
+                      <option value="36">36</option>
+                      <option value="44">44</option>
+                      <option value="52">52</option>
+                      <option value="60">60</option>
+                      <option value="68">68</option>
+                      <option value="76">76</option>
+                      <option value="84">84</option>
+                      <option value="92">92</option>
+                      <option value="100">100</option>
+                      <option value="108">108</option>
+                      <option value="116">116</option>
+                      <option value="124">124</option>
+                      <option value="132">132</option>
+                      <option value="140">140</option>
+                      <option value="148">148</option>
+                      <option value="156">156</option>
+                      <option value="164">164</option>
+                      <option value="172">172</option>
+                      <option value="180">180</option>
+                      <option value="188">188</option>
+                      <option value="196">196</option>
+                      <option value="204">204</option>
+                      <option value="212">212</option>
+                      <option value="220">220</option>
+                      <option value="236">236</option>
+                      <option value="244">244</option>
+                      <option value="252">252</option>
+                    </select>
+                  </div>
+                  <div class="col-6 mb-3">
+                    HPの個体値:
+                    <input type="number" name="def_iv_hp" max="31" min="0" value="{{ def_iv_hp }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    特性：
+                    <select name="def_abi">
+                      <option value="{{ def_abi }}">{{ def_abi }}</option>
+                      <option value="特性を指定する">特性を指定する</option>
+                      <option value="{{ poke_def.poke_ability }}">{{ poke_def.poke_ability }}</option>
+                      <option value="{{ poke_def.poke_ability2 }}">{{ poke_def.poke_ability2 }}</option>
+                      <option value="{{ poke_def.poke_abi_hidden }}">{{ poke_def.poke_abi_hidden }}</option>
+                    </select>
+                  </div>
+                  <div class="attack-rank col-md-6">
+                    もちもの：
+                  <select name="def_item">
+                    <option value="{{ def_item }}">{{ def_item }}</option>
+                    <option value="もちものを指定する">もちものを指定する</option>
+                    <option value="しんかのきせき">しんかのきせき</option>
+                    <option value="とつげきチョッキ">とつげきチョッキ</option>
+                    <option value="オボンの実">オボンの実</option>
+                    <option value="たべのこし">たべのこし</option>
+                    <option value="混乱実">混乱実</option>
+                    <option value="半減実">半減実</option>
+                    <option value="メタルパウダー">メタルパウダー</option>
+                    <option value="しんかいのウロコ">しんかいのウロコ</option>
+                    <option value="ばんのうがさ">ばんのうがさ</option>
+                </select>
+                  </div>
+                  <p class="mt-3">
+                    性格補正：
+                    <label><input type="radio" name="def_nature" value="1.1">1.1倍&nbsp;</label>
+                    <label><input type="radio" name="def_nature" value="1.0" checked>1.0倍&nbsp;</label>
+                    <label><input type="radio" name="def_nature" value="0.9">0.9倍&nbsp;</label>
+                  </p>
+                </div>
+                <!--nameをdef_situ, value（実際に送信される値）をそれぞれreflect, light_screenとした -->
+                <!-- <div class="check-point">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                    <label class="form-check-label" for="flexSwitchCheckDefault" name="reflect"
+                      value="reflect">リフレクター</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                    <label class="form-check-label" for="flexSwitchCheckChecked" name="light_screen"
+                      value="light_screen">ひかりのかべ</label>
+                  </div>
+                </div> -->
+
+                <input type="checkbox" name="def_situ" value="reflect">リフレクター&nbsp;
+                <input type="checkbox" name="def_situ" value="light_screen">ひかりのかべ&nbsp;
+
+              </div>
+
+            </div>
+          </div>
+          <div class="box3">
+            <div class="contents-headline">
+              <i class="fa-solid fa-cloud-sun-rain"></i>
+              ：環境、その他
+            </div>
+            <div class="row">
+              <div class="col-sm-6 mt-3">
+                天候：
+                <select name="poke_env">
+                  <option value="{{ poke_env}}">{{ poke_env}}</option>
+                  <option value="未選択">未選択</option>
+                  <option value="はれ">はれ</option>
+                  <option value="あめ">あめ</option>
+                  <option value="すなあらし">すなあらし</option>
+                  <option value="ゆき">ゆき</option>
+                </select>
+              </div>
+              <div class="col-sm-6 mt-3">
+                フィールド：
+                <select name="poke_fild">
+                  <option value="{{ poke_fild}}">{{ poke_fild }}</option>
+                  <option value="未選択">未選択</option>
+                  <option value="エレキフィールド">エレキフィールド</option>
+                  <option value="グラスフィールド">グラスフィールド</option>
+                  <option value="ミストフィールド">ミストフィールド</option>
+                  <option value="サイコフィールド">サイコフィールド</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 mt-3">
+                その他：
+                <select name="poke_etc">
+                  <option value="{{ poke_etc }}">{{ poke_etc }}</option>
+                  <option value="未選択">未選択</option>
+                  <option value="わざわいのおふだ">わざわいのおふだ</option>
+                  <option value="わざわいのたま">わざわいのたま</option>
+                  <option value="わざわいのつるぎ">わざわいのつるぎ</option>
+                  <option value="わざわいのうつわ">わざわいのうつわ</option>
+                </select>
+              </div>
+              <div class="col-sm-6 mt-3">
+                ダメージ追加：
+                <input type="number" name="add_dmg" value="{{ add_dmg }}" min="0" max="100">%
+
+
+              </div>
+            </div>
+          </div>
+          <div class="fixed-contents">
+            <div class="fixed-headline">
+              <i class="fa-solid fa-check"></i>
+              ：結果 <input type="submit" value="計算する" id="button1">
+            </div>
+            <div class="fixed-text">
+              {{ min_final_dmg }}~{{ max_final_dmg }}
+              ({{ percent_min_final_dmg }}% ~ {{ percent_max_final_dmg }}%)
+            </div>
+
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: {{ percent_for_width }}%;" aria-valuenow="25" aria-valuemin="0"
+                aria-valuemax="100">{{ percent_for_width }}%</div>
+            </div>
+          </div>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
+{% endblock header %}
