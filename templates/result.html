@@ -409,7 +409,7 @@
             </div>
 
             <div class="row">
-              <div class="col-sm-6 mt-3">
+              <!-- <div class="col-sm-6 mt-3">
                 その他：
                 <select name="poke_etc">
                   <option value="{{ poke_etc }}">{{ poke_etc }}</option>
@@ -419,11 +419,8 @@
                   <option value="わざわいのつるぎ">わざわいのつるぎ</option>
                   <option value="わざわいのうつわ">わざわいのうつわ</option>
                 </select>
-              </div>
+              </div> -->
               <div class="col-sm-6 mt-3">
-                ダメージ追加：
-                <input type="number" name="add_dmg" value="{{ add_dmg }}" min="0" max="100">%
-
 
               </div>
             </div>
@@ -436,11 +433,12 @@
             <div class="fixed-text">
               {{ min_final_dmg }}~{{ max_final_dmg }}
               ({{ percent_min_final_dmg }}% ~ {{ percent_max_final_dmg }}%)
-            </div>
 
+            </div>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: {{ percent_for_width }}%;" aria-valuenow="25" aria-valuemin="0"
-                aria-valuemax="100">{{ percent_for_width }}%</div>
+              <div class="progress-bar" role="progressbar" style="width: {{ percent_for_min_width }}%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-info" role="progressbar" style="width: {{ hp_adjustment }}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ heal_value }}%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">回復分</div>
             </div>
           </div>
       </form>

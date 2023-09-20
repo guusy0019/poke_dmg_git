@@ -13,6 +13,9 @@ from .utilitys.dmg_basic import (
 )
 from .utilitys.dmg_m_etc import (
     wall_correct,
+    heal_value_func,
+    hp_adjustment_func,
+    field_value_func,
 )
 
 from .utilitys.change_rank_num import(change_atk_rank_num, change_def_rank_num)
@@ -30,6 +33,7 @@ def pokedmgfunc2(request):
         name1 = request.POST.get('name1')  
         name2 = request.POST.get('name2')
         poke_move = request.POST.get('poke_move')
+
 
         try:
             # モデル内のポケモン名と照合（攻撃側）してポケモンを取得
@@ -150,7 +154,7 @@ def pokedmgfunc2(request):
             base_a = poke_atk.poke_attack
             base_b = poke_def.poke_defense
             base_c = poke_atk.poke_sp_atk
-            base_d = poke_atk.poke_sp_def
+            base_d = poke_def.poke_sp_def
             int_atk_iv = int(atk_iv)
             int_atk_ev = int(atk_ev)  
             int_def_iv = int(def_iv)          
@@ -176,6 +180,8 @@ def pokedmgfunc2(request):
                                            float_atk_nature, 
                                            float_def_nature,
                                            )
+            
+            #小数点以下を切り捨てるためにint()を使用
             a_status = poke_status_dict['a_num']   
             a_status_result = poke_status_dict['a_result']
 
@@ -188,10 +194,19 @@ def pokedmgfunc2(request):
             d_status = poke_status_dict['d_num']
             d_status__result = poke_status_dict['d_result']
 
-            print(f'Aのステータスは{a_status}です')
-            print(f'Aの実際のステータスは{a_status_result}です')
+            print(f'攻撃側のAのステータスは{a_status}です')
+            print(f'攻撃側のAのランク込みのステータスは{a_status_result}です')
+            print('__________________')
+            print(f'防御側のBのステータスは{b_status}です')
+            print(f'防御側のBのランク込みのステータスは{b_status_result}です')
+            print('__________________')
+            print(f'攻撃側Cのステータスは{c_status}です')
+            print(f'攻撃側Cのランク込みのステータスは{c_status_result}です')
+            print('__________________')
+            print(f'防御側Dのステータスは{d_status}です')
+            print(f'防御側Dのランク込みのステータスは{d_status__result}です')
+            print('__________________')
 
-            
             #攻撃側のレベルの部分の数値を取得
             poke_atk_level = calc_atk_levels(request, atk_level)
             poke_atk_level = int(poke_atk_level)
@@ -235,6 +250,8 @@ def pokedmgfunc2(request):
             atk_poke_abilitys = poke_atk.poke_ability, poke_atk.poke_ability2, poke_atk.poke_abi_hidden
             atk_move_types = poke_move.move_type
 
+            print(f'攻撃側のポケモンの特性は{atk_poke_abilitys}')
+
             poke_type_match_bonus = type_match_bounus(request, atk_tera_type, poke_atk, atk_poke_types, atk_poke_abilitys, atk_move_types)
             print(f'タイプ一致補正関数:{poke_type_match_bonus}')
 
@@ -261,6 +278,9 @@ def pokedmgfunc2(request):
             poke_wall_correcttion = wall_correct(request, poke_wall, poke_move_kinds)
             print(f'壁補正関数 {poke_wall_correcttion}')
 
+            poke_fild_value = field_value_func(poke_fild, move_types, poke_move)
+            print(f'フィールド補正値は{ poke_fild_value }')
+
 
             #________________
             #   最終ダメージを計算
@@ -268,31 +288,93 @@ def pokedmgfunc2(request):
             #   ×おやこあい補正×天気補正×急所補正×乱数補正×タイプ一致補正
             #   ×相性補正×やけど補正×M×Mprotect
 
+            #_________________
+            #アイテム補正関数を取得
+            #ここでは汎用性を重視するために、最終ダメージに✖️ことでダメージを求めるように工夫する
+
+            atk_item_num = atk_itemfunc(atk_item, 
+                                        poke_move_class, 
+                                        poke_effectiveness, 
+                                        poke_atk, 
+                                        atk_move_types, 
+                                        poke_env,
+                                        )
+            print(f'攻撃側のアイテム補正は{atk_item_num}')
+
+            #しんかのキセキのために、進化前かどうかの真偽値を取得
+            poke_before_evolution = poke_def.before_evolution
+            print(f'防御側のポケモンの進化前の真偽値は{poke_before_evolution}')
+            
+            #回復きのみ系統は最終DMGを計算する際にこの関数に組み込むのは不可能だったので別で記載
+            def_item_num = def_itemfunc(def_item,
+                                        poke_move_class,
+                                        poke_effectiveness,
+                                        poke_def,
+                                        poke_env,
+                                        poke_before_evolution,
+                                        atk_move_types,
+                                        )
+             
+            print(f'防御側のアイテム補正は{def_item_num}')
+
+
             min_final_dmg = level_and_status_dmg * poke_weather_effeects \
             * poke_type_match_bonus * poke_effectiveness * poke_burn_corrction \
-            * 85 / 100
+            * poke_fild_value * poke_wall_correcttion * atk_item_num * def_item_num * 0.85
 
             max_final_dmg = level_and_status_dmg * poke_weather_effeects \
             * poke_type_match_bonus * poke_effectiveness * poke_burn_corrction \
+            * poke_fild_value * poke_wall_correcttion * atk_item_num * def_item_num
 
+            
+            #正数に切り捨て
+            #この時点でポケモンのステータスを考慮した値になっている
             min_final_dmg = int(min_final_dmg)
-            max_final_dmg = int(max_final_dmg)        
+            max_final_dmg = int(max_final_dmg)
 
             print(f'最小ダメージ {min_final_dmg}')
             print(f'最大ダメージ {max_final_dmg}')
 
+            #ポケモンの残りの体力
+            min_remainig_hp = def_poke_hp - max_final_dmg
+            max_remainig_hp = def_poke_hp - min_final_dmg
+            print(f'最小の残り体力は{min_remainig_hp}')
+            print(f'最大の残り体力は{max_remainig_hp}')
+            
+
+            #パーセンテージに変換
             percent_min_final_dmg = min_final_dmg / def_poke_hp * 100
             percent_max_final_dmg = max_final_dmg / def_poke_hp * 100
+
+            heal_value = heal_value_func(def_item,
+                                         percent_min_final_dmg,
+                                         max_remainig_hp,
+                                         def_poke_hp,
+                                         )
+
+
+            heal_value = int(heal_value / def_poke_hp  * 100)
+            print(f'きのみ分の回復量は{heal_value}')
+
+            #パーセンテージの正数型に変換
             percent_min_final_dmg = int(percent_min_final_dmg)
             percent_max_final_dmg = int(percent_max_final_dmg)
-            percent_for_width = 100 - percent_max_final_dmg
+
+            #体力バーを可視化するように変換
+            percent_for_min_width = 100 - percent_max_final_dmg
+            #乱数MAX ー　乱数MINの差
+            percent_for_max_width = percent_max_final_dmg - percent_min_final_dmg
             print(f'最小ダメージの%は {percent_min_final_dmg}')
             print(f'最大ダメージの%は {percent_max_final_dmg}')
 
-            
+            print(f'ダメージの最小の％は{percent_min_final_dmg}')
+            print(f'ダメージの最大％は{percent_for_max_width}')
 
+            #体力が0になった時バーの乱数MAX - 乱数MINの差部分がきちんと０になるようにする関数
+            hp_adjustment = hp_adjustment_func(percent_for_max_width, max_remainig_hp)
+            print(f'乱数MAX - 乱数MINの差のHPは{hp_adjustment}')
 
-            
+               
             context = {
                 #攻撃側の情報
                 'poke_atk': poke_atk, 
@@ -332,11 +414,15 @@ def pokedmgfunc2(request):
                 'min_final_dmg': min_final_dmg,
                 'percent_min_final_dmg' : percent_min_final_dmg,
                 'percent_max_final_dmg' : percent_max_final_dmg,
-                'percent_for_width': percent_for_width
+                'hp_adjustment': hp_adjustment,
+                'percent_for_min_width': percent_for_min_width,
+                'heal_value': heal_value,
                 }
             
             return render(request, 'result.html', context)
         
+
+
         except PokeModel.DoesNotExist:
             error_message = 'ポケモン名に間違いがあります'
             return render(request, 'error.html', {'error_message': error_message})  # エラーメッセージを表示するテンプレートに渡す
@@ -345,6 +431,7 @@ def pokedmgfunc2(request):
             error_message = '技名に間違いがあります'
             return render(request, 'error.html', {'error_message': error_message})    
 
+    #request.POSTがgetだった時の、専用のHTMLファイルへgo!!
     return render(request, 'pokedmg.html')
 
 

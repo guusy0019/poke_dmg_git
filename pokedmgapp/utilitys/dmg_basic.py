@@ -10,7 +10,7 @@ from ..models import PokeModel, PokeMove
 # {(種族値×2＋個体値＋努力値/4)×Lv/100}＋10＋Lv
 
 
-# 攻撃,防御,特攻,特防,素早さ
+# 攻撃,防御,特攻,特防,素早さ(HP以外)
 # [{(種族値×2＋個体値＋努力値/4)×Lv/100}＋5]×性格補正(1.1,1.0,0.9)
 
 #防御側のポケモンのHPを計算
@@ -84,53 +84,53 @@ def calc_poke_status(
                     'd_num': d_result,
                     'd_result': d_result,
                     }    
+    else:
+        if poke_move_class == 'physical':
+            a_num = (((base_a * 2 + atk_iv + atk_ev / 4) * atk_level / 100) + 5) * atk_nature
+            a_result = a_num * atk_rank_num
+            
+            b_num = (((base_b * 2 + def_iv + def_ev / 4) * def_level / 100) + 5) * def_nature
+            b_result = b_num * def_rank_num
 
-    if poke_move_class == 'physical':
-        a_num = (((base_a * 2 + atk_iv + atk_ev / 4) * atk_level / 100) + 5) * atk_nature
-        a_result = a_num * atk_rank_num
+            c_num = ((base_c * 2 / 4) * atk_level / 100) + 5
+            c_result = c_num
+
+            d_num = ((base_d * 2 / 4) * def_level / 100) + 5
+            d_result = d_num
+
+            return {'a_num': a_num, 
+                    'a_result': a_result, 
+                    'b_num': b_num, 
+                    'b_result': b_result,
+                    'c_num': c_num,
+                    'c_result': c_result,
+                    'd_num': d_result,
+                    'd_result': d_result,
+                    }
+
+        elif poke_move_class == 'special':
+            c_num = (((base_c * 2 + atk_iv + atk_ev /4) * atk_level / 100) + 5 ) * atk_nature
+            c_result = c_num * atk_rank_num
+
+            d_num = (((base_d * 2 + def_iv + def_ev / 4) * def_level / 100) + 5) * def_nature
+            d_result = d_num * def_rank_num
+
+            a_num = ((base_a * 2 / 4) * atk_level / 100) + 5
+            a_result = a_num
+
+            b_num = ((base_b * 2 / 4) * def_level / 100) + 5
+            b_result = b_num
+
+            return {'a_num': a_num, 
+                    'a_result': a_result, 
+                    'b_num': b_num, 
+                    'b_result': b_result,
+                    'c_num': c_num,
+                    'c_result': c_result,
+                    'd_num': d_result,
+                    'd_result': d_result,
+                    }
         
-        b_num = (((base_b * 2 + def_iv + def_ev / 4) * def_level / 100) + 5) * def_nature
-        b_result = b_num * def_rank_num
-
-        c_num = ((base_c * 2 / 4) * atk_level / 100) + 5
-        c_result = c_num
-
-        d_num = ((base_d * 2 / 4) * def_level / 100) + 5
-        d_result = d_num
-
-        return {'a_num': a_num, 
-                'a_result': a_result, 
-                'b_num': b_num, 
-                'b_result': b_result,
-                'c_num': c_num,
-                'c_result': c_result,
-                'd_num': d_result,
-                'd_result': d_result,
-                }
-
-    elif poke_move_class == 'special':
-        c_num = (((base_c * 2 + atk_iv + atk_ev /4) * atk_level / 100) + 5 ) * atk_nature
-        c_result = c_num * atk_rank_num
-
-        d_num = (((base_d * 2 + def_iv + def_ev / 4) * def_level / 100) + 5) * def_nature
-        d_result = d_num * def_rank_num
-
-        a_num = ((base_a * 2 / 4) * atk_level / 100) + 5
-        a_result = a_num
-
-        b_num = ((base_b * 2 / 4) * def_level / 100) + 5
-        b_result = b_num
-
-        return {'a_num': a_num, 
-                'a_result': a_result, 
-                'b_num': b_num, 
-                'b_result': b_result,
-                'c_num': c_num,
-                'c_result': c_result,
-                'd_num': d_result,
-                'd_result': d_result,
-                }
-    
 
 #攻撃側のレベルを取得して計算
 def calc_atk_levels(request, atk_level):
@@ -177,8 +177,16 @@ def weather_effects(request, atk_move_types, poke_env):
         weather_effects_nums = 1.5
         return weather_effects_nums
     
+    elif atk_move_types =='ほのお' and poke_env == 'あめ':
+        weather_effects_nums = 0.5
+        return weather_effects_nums
+    
     elif atk_move_types == 'みず' and poke_env == 'あめ':
         weather_effects_nums = 1.5
+        return weather_effects_nums
+    
+    elif atk_move_types == 'みず' and poke_env == 'ほのお':
+        weather_effects_nums = 0.5
         return weather_effects_nums
     
     return weather_effects_nums
